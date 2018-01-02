@@ -1,6 +1,5 @@
 version: 2
 jobs:
-
   test:
     machine:
       java:
@@ -45,10 +44,11 @@ jobs:
 
 workflows:
   version: 2
-  build_and_test:
+  build:
     jobs:
       - test
       - deploy-stage
-        require:
-          - test     
+        requires:
+          - test
+       
         
