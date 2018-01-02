@@ -4,7 +4,6 @@ jobs:
     machine:
       java:
         version: oraclejdk8
-  
     steps:
       - checkout
       - run: mvn test
@@ -24,30 +23,39 @@ jobs:
             --function-name swarm-deploy 
             --region us-east-1 
             --payload "{\"branch\":\"$CIRCLE_BRANCH\", \"build\":\"$CIRCLE_BUILD_NUM\", \"key3\":\"value3\"}" output.txt
-  
-  deploy-ci:
-    machine: true
+          
+  deploy-stage:
+    docker:
+      - image: ubuntu:14.04
+    working_directory: /tmp/my-project  
     steps:
-      - run: echo "hola"
+      - run:
+          name: Deploy if tests pass and branch is Staging
+          command: echo "stage"        
+          
   deploy-prod:
-    machine: true
+    docker:
+      - image: ubuntu:14.04
+    working_directory: /tmp/my-project  
     steps:
-      - run: echo "hola"
-  
-  workflows:
-    version: 2
-    build-deploy:
-      jobs:
-        - build
-        - deploy-ci
+      - run:
+          name: Deploy if tests pass and branch is Master
+          command: echo "prod"
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy-stage:
+          requires:
+            -build
+          filters:
+            branches:
+              only: develop
+      - deploy-prod:
           requires:
             - build
           filters:
             branches:
-              only: develop
-        - deploy-prod
-          require:
-            - build
-          filters:
-            branches:
-              only: master
+              only: master      
