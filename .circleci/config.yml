@@ -24,5 +24,5 @@ jobs:
             --invocation-type RequestResponse 
             --function-name swarm-deploy 
             --region us-east-1 
-            --payload '{"branch":$CIRCLE_BRANCH, "build":"$CIRCLE_BUILD_NUM", "key3":"value3"}' output.txt
+            --payload "{\"branch\":\"$CIRCLE_BRANCH\", \"build\":\"$CIRCLE_BUILD_NUM\", \"key3\":\"value3\"}" output.txt
      - run: cat output.txt
