@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  test:
+  build:
     machine:
       java:
         version: oraclejdk8
@@ -41,14 +41,5 @@ jobs:
       - run:
           name: Deploy if tests pass and branch is Master
           command: echo "prod"
-
-workflows:
-  version: 2
-  build:
-    jobs:
-      - test
-      - deploy-stage
-        requires:
-          - test
        
         
