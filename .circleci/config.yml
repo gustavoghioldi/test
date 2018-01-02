@@ -4,9 +4,7 @@ jobs:
     machine:
       java:
         version: oraclejdk8
-   
-    working_directory: ~/my-project
-
+  
     steps:
       - checkout
       - run: mvn test
@@ -36,20 +34,20 @@ jobs:
     steps:
       - run: echo "hola"
   
-workflows:
-  version: 2
-  build-deploy:
-    jobs:
-      - build
-      - deploy-ci
-        requires:
-          - build
-        filters:
-          branches:
-            only: develop
-      - deploy-prod
-        require:
-          - build
-        filters:
-          branches:
-            only: master
+  workflows:
+    version: 2
+    build-deploy:
+      jobs:
+        - build
+        - deploy-ci
+          requires:
+            - build
+          filters:
+            branches:
+              only: develop
+        - deploy-prod
+          require:
+            - build
+          filters:
+            branches:
+              only: master
