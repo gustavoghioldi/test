@@ -17,9 +17,9 @@ jobs:
      - run: echo $(git describe --tags)
      - run: echo $CIRCLE_TAG
      # build the application image
-     - run: docker build -t gustavoghioldi/$CIRCLE_PROJECT_REPONAME:${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM} .
+     - run: docker build -t gustavoghioldi/$CIRCLE_PROJECT_REPONAME:${CIRCLE_BRANCH}:latest .
      # deploy the image
-     - run: docker push gustavoghioldi/$CIRCLE_PROJECT_REPONAME:${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM} 
+     - run: docker push gustavoghioldi/$CIRCLE_PROJECT_REPONAME:${CIRCLE_BRANCH}:latest
      - run: aws lambda invoke 
             --invocation-type RequestResponse 
             --function-name swarm-deploy 
