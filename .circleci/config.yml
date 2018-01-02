@@ -24,3 +24,12 @@ jobs:
             --region us-east-1 
             --payload "{\"branch\":\"$CIRCLE_BRANCH\", \"build\":\"$CIRCLE_BUILD_NUM\", \"key3\":\"value3\"}" output.txt
      - run: cat output.txt
+   development:
+     ci:
+       branch: develop
+         commands:
+           - echo "Hola mundoi"
+     test:
+       branch: master
+         commands:
+           - echo "mast4eer"
