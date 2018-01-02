@@ -22,29 +22,6 @@ jobs:
             --invocation-type RequestResponse 
             --function-name swarm-deploy 
             --region us-east-1 
-            --payload "{\"branch\":\"$CIRCLE_BRANCH\", \"build\":\"$CIRCLE_BUILD_NUM\", \"key3\":\"value3\"}" output.txt
-          
-  deploy-stage:
-    docker:
-      - image: ubuntu:14.04
-    working_directory: /tmp/my-project  
-    steps:
-      - run:
-          name: Deploy if tests pass and branch is Staging
-          command: echo "stage"        
-          
-  deploy-prod:
-    docker:
-      - image: ubuntu:14.04
-    working_directory: /tmp/my-project  
-    steps:
-      - run:
-          name: Deploy if tests pass and branch is Master
-          command: echo "prod"
-
-workflows:
-  version: 2
-  build:
-    jobs: deploy-stage
+            --payload "{\"branch\":\"$CIRCLE_BRANCH\", \"build\":\"$CIRCLE_BUILD_NUM\", \"release\":\"$(git describe --tags)\"}" output.txt
        
         
