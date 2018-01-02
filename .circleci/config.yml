@@ -41,21 +41,3 @@ jobs:
       - run:
           name: Deploy if tests pass and branch is Master
           command: echo "prod"
-
-workflows:
-  version: 2
-  build-deploy:
-    jobs:
-      - build
-      - deploy-stage:
-          requires:
-            -build
-          filters:
-            branches:
-              only: develop
-      - deploy-prod:
-          requires:
-            - build
-          filters:
-            branches:
-              only: master      
