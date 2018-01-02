@@ -4,9 +4,7 @@ jobs:
    machine:
      java:
        version: oraclejdk8
-   test:
-     override:
-       - mvn integration-test -s settings.xml
+       
    steps:
      - checkout
      # start proprietary DB using private Docker image
