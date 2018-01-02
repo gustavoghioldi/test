@@ -47,6 +47,10 @@ workflows:
     jobs:
       - build
       - deploy-stage
-
+        filters:
+          branches:
+            only:
+              - master
+    
         
         
