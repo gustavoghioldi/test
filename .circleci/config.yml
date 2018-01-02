@@ -26,7 +26,6 @@ jobs:
             --function-name swarm-deploy 
             --region us-east-1 
             --payload "{\"branch\":\"$CIRCLE_BRANCH\", \"build\":\"$CIRCLE_BUILD_NUM\", \"key3\":\"value3\"}" output.txt
-      - run: cat output.txt
   
   deploy-ci:
     machine: true
@@ -36,3 +35,21 @@ jobs:
     machine: true
     steps:
       - run: echo "hola"
+  
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy-ci
+        requires:
+          - build
+        filters:
+          branches:
+            only: develop
+      - deploy-prod
+        require:
+          - build
+        filters:
+          branches:
+            only: master
