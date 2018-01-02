@@ -48,5 +48,7 @@ workflows:
   build_and_test:
     jobs:
       - test
-      - deploy-stage       
+      - deploy-stage
+        require:
+          - test     
         
