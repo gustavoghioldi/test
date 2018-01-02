@@ -5,7 +5,7 @@ jobs:
       java:
         version: oraclejdk8
    
-  working_directory: ~/my-project
+    working_directory: ~/my-project
 
     steps:
       - checkout
