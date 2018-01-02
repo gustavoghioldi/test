@@ -1,24 +1,36 @@
-version: 2
-jobs:
- build:
-   machine:
-     java:
-       version: oraclejdk8
-   steps:
-     - checkout
+machine:
+  environment:
+    JAVA_TOOL_OPTIONS: '-Dfile.encoding=UTF8 -Duser.timezone=UTC'
+  java:
+    version: oraclejdk8
+  python:
+    version: 2.7.6
+
+dependencies:
+  pre:
+    - pip install awscli
+  override:
+    - mvn dependency:resolve -s settings.xml
+
+test:
+  override:
+    - mvn integration-test -s settings.xml
+
+steps:
+  - checkout
      # start proprietary DB using private Docker image
      # with credentials stored in the UI
-     - run: |
+  - run: |
          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-     - run: echo $(git describe --tags)
-     - run: echo $CIRCLE_TAG
+  - run: echo $(git describe --tags)
+  - run: echo $CIRCLE_TAG
      # build the application image
-     - run: docker build -t gustavoghioldi/$CIRCLE_PROJECT_REPONAME:${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM} .
+  - run: docker build -t gustavoghioldi/$CIRCLE_PROJECT_REPONAME:${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM} .
      # deploy the image
-     - run: docker push gustavoghioldi/$CIRCLE_PROJECT_REPONAME:$(git describe --tags)-${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM} 
-     - run: aws lambda invoke 
+  - run: docker push gustavoghioldi/$CIRCLE_PROJECT_REPONAME:$(git describe --tags)-${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM} 
+  - run: aws lambda invoke 
             --invocation-type RequestResponse 
             --function-name swarm-deploy 
             --region us-east-1 
             --payload '{"branch":$CIRCLE_BRANCH, "build":"$CIRCLE_BUILD_NUM", "key3":"value3"}' output.txt
-     - run: cat output.txt
+  - run: cat output.txt
