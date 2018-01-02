@@ -4,9 +4,11 @@ jobs:
    machine:
      java:
        version: oraclejdk8
+   test:
+     override:
+       - mvn integration-test -s settings.xml
    steps:
      - checkout
-     - mvn integration-test -s settings.xml
      # start proprietary DB using private Docker image
      # with credentials stored in the UI
      - run: |
