@@ -21,7 +21,7 @@ jobs:
      # build the application image
      - run: docker build -t gustavoghioldi/$CIRCLE_PROJECT_REPONAME:${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM} .
      # deploy the image
-     - run: docker push gustavoghioldi/$CIRCLE_PROJECT_REPONAME:$(git describe --tags)-${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM} 
+     - run: docker push gustavoghioldi/$CIRCLE_PROJECT_REPONAME:${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM} 
      - run: aws lambda invoke 
             --invocation-type RequestResponse 
             --function-name swarm-deploy 
