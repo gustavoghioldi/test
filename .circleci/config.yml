@@ -1,67 +1,31 @@
-# Java Maven CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-java/ for more details
-#
+Build Timing
 version: 2
 jobs:
-  build:
-    docker:
-      # specify the version you desire here
-      - image: circleci/openjdk:8-jdk
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
+ build:
+   machine: true
+   steps:
+     - checkout
+     # start proprietary DB using private Docker image
+     # with credentials stored in the UI
+     - run:
+         name: dockerHub login
+         command: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
 
-    working_directory: ~/repo
-
-    environment:
-      # Customize the JVM maximum heap limit
-      MAVEN_OPTS: -Xmx3200m
-    
-    steps:
-      - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "pom.xml" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
-      - run: mvn dependency:go-offline
-
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: v1-dependencies-{{ checksum "pom.xml" }}
-        
-      # run tests!
-      - run: mvn integration-test
-      
-
-      - run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-      - run: docker build -t gustavoghioldi/$CIRCLE_PROJECT_REPONAME:${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM} .
-#version: 2
-#jobs:
-# build:
-#   machine: true
-#   steps:
-#     - checkout
-#     # start proprietary DB using private Docker image
-#     # with credentials stored in the UI
-#     - run: |
-#         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-#     - run: echo $(git describe --tags)
-#     - run: echo $CIRCLE_TAG
-#     # build the application image
-#     - run: docker build -t gustavoghioldi/$CIRCLE_PROJECT_REPONAME:${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM} .
-#     # deploy the image
-#     - run: docker push gustavoghioldi/$CIRCLE_PROJECT_REPONAME:$(git describe --tags)-${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM} 
-#     - run: aws lambda invoke 
-#            --invocation-type RequestResponse 
-#            --function-name swarm-deploy 
-#            --region us-east-1 
-#            --payload '{"branch":$CIRCLE_BRANCH, "build":"$CIRCLE_BUILD_NUM", "key3":"value3"}' output.txt
-#     - run: cat output.txt
+     # build the application image
+     - run: 
+         name: build image
+         command: docker build -t gustavoghioldi/$CIRCLE_PROJECT_REPONAME:${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM} .
+     # deploy the image
+     - run: 
+         name: push image
+         command: docker push gustavoghioldi/$CIRCLE_PROJECT_REPONAME:${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM} 
+     - run: 
+         name: invoke lambda swarm-deploy
+         command: aws lambda invoke 
+            --invocation-type RequestResponse 
+            --function-name swarm-deploy 
+            --region us-east-1 
+            --payload "{\"branch\":\"$CIRCLE_BRANCH\", \"build\":\"$CIRCLE_BUILD_NUM\" }" output.txt
+     - run: 
+         name: view output
+         command: cat output.txt
