@@ -4,7 +4,7 @@ jobs:
    machine:
      java:
        version: oraclejdk8
-
+   working_directory: ~/circleci-demo-java-spring
    steps:
      - checkout
      - run: mvn dependency:go-offline
