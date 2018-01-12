@@ -24,5 +24,3 @@ jobs:
             --region us-east-1 
             --payload "{\"branch\":\"$CIRCLE_BRANCH\", \"build\":\"$CIRCLE_BUILD_NUM\", \"release\":\"$(git describe --tags)\"}" output.txt
       - run: cat output.txt
-      - run: cat .circleci/config.yml
-        
