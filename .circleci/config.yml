@@ -18,10 +18,10 @@ jobs:
       - run: docker build -t garbarinocomar/$CIRCLE_PROJECT_REPONAME:${CIRCLE_BRANCH} .
      # deploy the image
       - run: docker push garbarinocomar/$CIRCLE_PROJECT_REPONAME:${CIRCLE_BRANCH}
-      - run: echo "{\"image\":\"garbarinocomar/$CIRCLE_PROJECT_REPONAME:${CIRCLE_BRANCH} \", \"port\":\"5000\", \"env\":\"env=ci\", \"service_name\":\"${CIRCLE_PROJECT_REPONAME}\"}"
+      - run: echo "{\"image\":\"garbarinocomar/$CIRCLE_PROJECT_REPONAME:${CIRCLE_BRANCH} \", \"port\":\"5000\", \"env\":[${DEPLOY_ENV_VARS}], \"service_name\":\"${CIRCLE_PROJECT_REPONAME}\"}"
       - run: aws lambda invoke 
             --invocation-type RequestResponse 
             --function-name swarm-ci-deploy 
             --region us-east-1 
-            --payload "{\"image\":\"garbarinocomar/$CIRCLE_PROJECT_REPONAME:${CIRCLE_BRANCH} \", \"port\":${PORT}, \"env\":${DEPLOY_ENV_VARS}, \"service_name\":\"${CIRCLE_PROJECT_REPONAME}\"}" output.txt
+            --payload "{\"image\":\"garbarinocomar/$CIRCLE_PROJECT_REPONAME:${CIRCLE_BRANCH} \", \"port\":\"5000\", \"env\":[${DEPLOY_ENV_VARS}], \"service_name\":\"${CIRCLE_PROJECT_REPONAME}\"}" output.txt
       - run: cat output.txt
