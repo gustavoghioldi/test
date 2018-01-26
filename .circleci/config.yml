@@ -6,6 +6,7 @@ jobs:
         version: oraclejdk8
     steps:
       - checkout
+      - run: cat Dockerfile | grep EXPOSE
       - run: mvn test
       - run: mvn package
      # start proprietary DB using private Docker image
