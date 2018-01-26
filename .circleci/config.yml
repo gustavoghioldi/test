@@ -23,5 +23,5 @@ jobs:
             --invocation-type RequestResponse 
             --function-name swarm-ci-deploy 
             --region us-east-1 
-            --payload "{\"image\":\"garbarinocomar/$CIRCLE_PROJECT_REPONAME:${CIRCLE_BRANCH} \", \"port\":\"5000\", \"env\":\"env=ci\", \"service_name\":\"${CIRCLE_PROJECT_REPONAME}\"}" output.txt
+            --payload "{\"image\":\"garbarinocomar/$CIRCLE_PROJECT_REPONAME:${CIRCLE_BRANCH} \", \"port\":\"5000\", \"env\":[\"env=ci\"], \"service_name\":\"${CIRCLE_PROJECT_REPONAME}\"}" output.txt
       - run: cat output.txt
